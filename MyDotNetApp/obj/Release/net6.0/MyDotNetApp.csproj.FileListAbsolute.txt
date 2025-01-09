@@ -1,0 +1,15 @@
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\bin\Release\net6.0\MyDotNetApp.exe
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\bin\Release\net6.0\MyDotNetApp.deps.json
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\bin\Release\net6.0\MyDotNetApp.runtimeconfig.json
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\bin\Release\net6.0\MyDotNetApp.dll
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\bin\Release\net6.0\MyDotNetApp.pdb
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.csproj.AssemblyReference.cache
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.GeneratedMSBuildEditorConfig.editorconfig
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.AssemblyInfoInputs.cache
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.AssemblyInfo.cs
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.csproj.CoreCompileInputs.cache
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.dll
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\refint\MyDotNetApp.dll
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.pdb
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.genruntimeconfig.cache
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\ref\MyDotNetApp.dll
