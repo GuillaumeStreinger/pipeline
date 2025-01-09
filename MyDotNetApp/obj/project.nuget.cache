@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tbYfAJQUcQQRzSLRm5CDzT892mFE37DQisdnRf1KgXJ7NhZTPDxOBbkG978Jqu3PZNJkKoZkqOK2P1bG1qo8jA==",
+  "dgSpecHash": "dXo7NjdrrEP0gunyUvixiPTzYgWLZFuQsSYImDLHR7+NPpizgizg+iBdTb8LkTzlUr1TIB3hpFQSX+T54bk/qA==",
   "success": true,
-  "projectFilePath": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\MyDotNetApp\\MyDotNetApp.csproj",
+  "projectFilePath": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\MyDotNetApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\user\\.nuget\\packages\\microsoft.codecoverage\\17.12.0\\microsoft.codecoverage.17.12.0.nupkg.sha512",
     "C:\\Users\\user\\.nuget\\packages\\microsoft.net.test.sdk\\17.12.0\\microsoft.net.test.sdk.17.12.0.nupkg.sha512",

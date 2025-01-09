@@ -695,11 +695,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\MyDotNetApp\\MyDotNetApp.csproj",
+      "projectUniqueName": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\MyDotNetApp.csproj",
       "projectName": "MyDotNetApp",
-      "projectPath": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\MyDotNetApp\\MyDotNetApp.csproj",
+      "projectPath": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\MyDotNetApp.csproj",
       "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\MyDotNetApp\\obj\\",
+      "outputPath": "D:\\3ESGI\\5ESGI\\cicd\\pipeline\\MyDotNetApp\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
