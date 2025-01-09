@@ -27,22 +27,28 @@ jobs:
       - name: Build project
         run: dotnet build --no-restore --configuration Release
 
-  measure:
-    name: Code Quality Analysis
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+ measure:
+  name: Code Quality Analysis
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
 
-      - name: Run SonarQube
-        uses: sonarsource/sonar-scanner-action@v2
-        with:
-          sonarHostUrl: ${{ secrets.SONARQUBE_HOST_URL }}
-          sonarToken: ${{ secrets.SONARQUBE_TOKEN }}
-          args: >
-            -Dsonar.projectKey=MyDotNetApp
-            -Dsonar.sources=.
-            -Dsonar.language=cs
+    - name: Install SonarScanner
+      run: |
+        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
+        unzip sonar-scanner-cli-4.7.0.2747-linux.zip -d $HOME
+        export PATH=$HOME/sonar-scanner-4.7.0.2747-linux/bin:$PATH
+
+    - name: Run SonarScanner
+      run: |
+        sonar-scanner \
+          -Dsonar.projectKey=MyDotNetApp \
+          -Dsonar.sources=. \
+          -Dsonar.language=cs \
+          -Dsonar.host.url=${{ secrets.SONARQUBE_HOST_URL }} \
+          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
+
 
   document:
     name: Generate Documentation
