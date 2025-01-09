@@ -51,10 +51,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install Sandcastle Tools
+        run: dotnet tool install --global Sandcastle.Tools
+
       - name: Build Sandcastle Documentation
-        run: |
-          dotnet tool install --global Sandcastle.Tools
-          shfb build
+        run: shfb build MyDocumentationProject.shfbproj
 
   test:
     name: Test
@@ -66,17 +67,25 @@ jobs:
       - name: Run NUnit Tests
         run: |
           dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
-          
+
+      - name: Publish Test Results
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results
+          path: '**/test-results.trx'
+
   secure:
     name: Dependency Security Check
     runs-on: ubuntu-latest
     steps:
-      - name: Run Dependency-Track Analysis
+      - name: Checkout code
         uses: actions/checkout@v3
-      - name: Dependency-Track CLI
+
+      - name: Run Dependency-Track Server
         run: |
-          docker run dependencytrack/frontend
-          docker run dependencytrack/server
+          docker pull dependencytrack/bundled
+          docker run -d --name dependency-track -p 8080:8080 dependencytrack/bundled
+          echo "Dependency-Track running on http://localhost:8080"
 
   deploy:
     name: Deploy to Octopus Deploy
@@ -87,4 +96,8 @@ jobs:
 
       - name: Deploy with Octopus CLI
         run: |
-          docker run octopusdeploy/octo push --package=myapp.zip --server=$OCTOPUS_SERVER --apikey=$OCTOPUS_APIKEY
+          docker pull octopusdeploy/octo
+          docker run --rm \
+            -e OCTOPUS_SERVER=${{ secrets.OCTOPUS_SERVER }} \
+            -e OCTOPUS_APIKEY=${{ secrets.OCTOPUS_APIKEY }} \
+            octopusdeploy/octo push --package=myapp.zip
