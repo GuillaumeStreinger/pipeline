@@ -34,18 +34,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Start SonarQube
+        run: |
+          docker run -d --name sonarqube -p 9000:9000 sonarqube:lts
+
+      - name: Wait for SonarQube to start
+        run: |
+          sleep 30 # Attendez que SonarQube soit prêt à accepter les connexions
+
       - name: Run SonarScanner via Docker
         run: |
-          docker pull sonarsource/sonar-scanner-cli
           docker run --rm \
-          -e SONAR_HOST_URL=${{ secrets.SONARQUBE_HOST_URL }} \
-          -e SONAR_LOGIN=${{ secrets.SONARQUBE_TOKEN }} \
-          -v $(pwd):/usr/src \
-          sonarsource/sonar-scanner-cli \
-          -Dsonar.projectKey=MyDotNetApp \
-          -Dsonar.sources=. \
-          -Dsonar.language=cs
-
+            -e SONAR_HOST_URL=http://localhost:9000 \
+            -e SONAR_LOGIN=${{ secrets.SONARQUBE_TOKEN }} \
+            -v $(pwd):/usr/src \
+            sonarsource/sonar-scanner-cli \
+            -Dsonar.projectKey=MyDotNetApp \
+            -Dsonar.sources=. \
+            -Dsonar.language=cs
   document:
     name: Generate Documentation
     runs-on: ubuntu-latest
