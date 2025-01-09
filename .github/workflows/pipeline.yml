@@ -31,26 +31,20 @@ jobs:
     name: Code Quality Analysis
     runs-on: ubuntu-latest
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-    - name: Install SonarScanner
-      run: |
-        wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
-        unzip sonar-scanner-cli-4.7.0.2747-linux.zip -d $HOME
-        export PATH=$HOME/sonar-scanner-4.7.0.2747-linux/bin:$PATH
-        echo "$PATH"
-
-    - name: Run SonarScanner
-      run: |
-        $HOME/sonar-scanner-4.7.0.2747-linux/bin/sonar-scanner \
+      - name: Run SonarScanner via Docker
+        run: |
+          docker pull sonarsource/sonar-scanner-cli
+          docker run --rm \
+          -e SONAR_HOST_URL=${{ secrets.SONARQUBE_HOST_URL }} \
+          -e SONAR_LOGIN=${{ secrets.SONARQUBE_TOKEN }} \
+          -v $(pwd):/usr/src \
+          sonarsource/sonar-scanner-cli \
           -Dsonar.projectKey=MyDotNetApp \
           -Dsonar.sources=. \
-          -Dsonar.language=cs \
-          -Dsonar.host.url=${{ secrets.SONARQUBE_HOST_URL }} \
-          -Dsonar.login=${{ secrets.SONARQUBE_TOKEN }}
-
-
+          -Dsonar.language=cs
 
   document:
     name: Generate Documentation
