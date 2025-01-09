@@ -1,0 +1,90 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build project
+        run: dotnet build --no-restore --configuration Release
+
+  measure:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run SonarQube
+        uses: sonarsource/sonar-scanner-action@v2
+        with:
+          sonarHostUrl: ${{ secrets.SONARQUBE_HOST_URL }}
+          sonarToken: ${{ secrets.SONARQUBE_TOKEN }}
+          args: >
+            -Dsonar.projectKey=MyDotNetApp
+            -Dsonar.sources=.
+            -Dsonar.language=cs
+
+  document:
+    name: Generate Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Build Sandcastle Documentation
+        run: |
+          dotnet tool install --global Sandcastle.Tools
+          shfb build
+
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Run NUnit Tests
+        run: |
+          dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
+          
+  secure:
+    name: Dependency Security Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run Dependency-Track Analysis
+        uses: actions/checkout@v3
+      - name: Dependency-Track CLI
+        run: |
+          docker run dependencytrack/frontend
+          docker run dependencytrack/server
+
+  deploy:
+    name: Deploy to Octopus Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Deploy with Octopus CLI
+        run: |
+          docker run octopusdeploy/octo push --package=myapp.zip --server=$OCTOPUS_SERVER --apikey=$OCTOPUS_APIKEY
