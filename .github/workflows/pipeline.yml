@@ -66,30 +66,39 @@ jobs:
         run: shfb build MyDocumentationProject.shfbproj
 
   test:
-    name: Test
+    name: Run NUnit Tests
     runs-on: ubuntu-latest
     steps:
+    # 1. Récupération du code source
     - name: Checkout code
       uses: actions/checkout@v3
 
+    # 2. Configuration de l'environnement .NET
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
         dotnet-version: '6.0'
 
+    # 3. Restauration des dépendances
     - name: Restore dependencies
       run: dotnet restore
 
+    # 4. Compilation du projet en mode Release
+    - name: Build project
+      run: dotnet build --configuration Release
+
+    # 5. Exécution des tests NUnit avec génération de rapport
     - name: Run NUnit Tests
       run: |
-        dotnet test --configuration Release --logger "trx;LogFileName=test-results.trx"
+        dotnet test --configuration Release --no-build \
+          --logger "trx;LogFileName=test-results.trx"
 
+    # 6. Publication des résultats des tests
     - name: Publish Test Results
       uses: actions/upload-artifact@v3
       with:
         name: test-results
         path: '**/test-results.trx'
-
 
   secure:
     name: Dependency Security Check
