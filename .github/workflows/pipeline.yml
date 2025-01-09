@@ -26,11 +26,11 @@ jobs:
 
       - name: Build project
         run: dotnet build --no-restore --configuration Release
-
- measure:
-  name: Code Quality Analysis
-  runs-on: ubuntu-latest
-  steps:
+        
+  measure:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    steps:
     - name: Checkout code
       uses: actions/checkout@v3
 
