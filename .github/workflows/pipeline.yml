@@ -37,7 +37,7 @@ jobs:
         ports:
           - 9000:9000
         options: >-
-          --health-cmd="curl -f http://localhost:9000 || exit 1"
+          --health-cmd="curl -f http://localhost:9000/api/system/status || exit 1"
           --health-interval=5s
           --health-timeout=3s
           --health-retries=20
@@ -77,7 +77,7 @@ jobs:
             /d:sonar.login=${{ secrets.SONAR_TOKEN }}
           dotnet build MyDotNetApp.sln --configuration Release
           dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
-
+          
   document:
     name: Generate Documentation
     runs-on: ubuntu-latest
