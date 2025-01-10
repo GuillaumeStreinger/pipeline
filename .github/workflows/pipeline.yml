@@ -68,10 +68,9 @@ jobs:
       - name: Build the project
         run: dotnet build MyDotNetApp.sln --configuration Release
 
-      - name: Download and install SHFB
+      - name: Install SHFB from local zip
         run: |
-          curl -L -o SHFBInstaller.zip https://github.com/EWSoftware/SHFB/releases/download/v2021.9.25.0/SHFBInstaller.zip
-          Expand-Archive -Path SHFBInstaller.zip -DestinationPath SHFB
+          Expand-Archive -Path ./SHFBInstaller.zip -DestinationPath SHFB
           msiexec /i SHFB/SHFB.msi /quiet
 
       - name: Add SHFB to PATH
