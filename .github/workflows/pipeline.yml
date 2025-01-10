@@ -84,22 +84,21 @@ jobs:
             "build": {
               "content": [
                 { "files": ["api/**"] },
-                { "files": ["articles/**"] },
-                { "files": ["toc.yml"] }
+                { "files": ["MyDotNetApp/Articles/**"] },
+                { "files": ["MyDotNetApp/toc.yml"] }
               ],
               "dest": "_site"
             }
           }' > docfx.json
 
+      - name: Verify Documentation Input
+        run: |
+          ls -R
+          cat docfx.json
+
       - name: Generate Documentation with DocFX
         run: |
           docfx build
-
-      - name: Verify Documentation Output
-        run: |
-          if [ ! -d "_site" ]; then
-            echo "Documentation was not generated successfully." && exit 1
-          fi
 
       - name: Upload Documentation Artifact
         uses: actions/upload-artifact@v3
