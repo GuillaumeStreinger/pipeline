@@ -60,14 +60,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install dependencies and extract DocFX
+      - name: Generate Documentation with DocFX (2.57.2)
         run: |
-          sudo apt-get update
-          sudo apt-get install -y unzip curl
-          unzip docfx.zip -d ./docfx
-
-      - name: Generate Documentation with DocFX
-        run: ./docfx/docfx build
+          docker run --rm -v "$(pwd):/workspace" -w /workspace mcr.microsoft.com/dotnet/sdk:6.0 bash -c "
+            dotnet tool install -g docfx --version 2.57.2 &&
+            ~/.dotnet/tools/docfx build
+          "
 
       - name: Verify Documentation Output
         run: |
