@@ -160,55 +160,27 @@ jobs:
           path: sbom.json
 
   deploy:
-    name: Deploy to Octopus Deploy
+    name: Deploy to Octopus
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
   
-      - name: Set up Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get remove -y docker docker-engine docker.io containerd runc
-          sudo apt-get install -y \
-            ca-certificates \
-            curl \
-            gnupg \
-            lsb-release
-          sudo mkdir -p /etc/apt/keyrings
-          curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
-          echo \
-            "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
-            $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
-          sudo apt-get update
-          sudo apt-get install -y docker-ce docker-ce-cli containerd.io
-  
-      - name: Pull Octopus CLI Docker Image
-        run: |
-          docker pull octopusdeploy/octo
-  
       - name: Push Package to Octopus
-        env:
-          OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
-          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         run: |
           docker run --rm \
             -v $(pwd):/src \
-            octopusdeploy/octo \
-            push --server $OCTOPUS_URL \
-                 --apiKey $OCTOPUS_API_KEY \
+            octopusdeploy/octopusdeploy:cli \
+            push --server "http://localhost:8080" \
+                 --apiKey ${{ secrets.OCTOPUS_API_KEY }} \
                  --package /src/myapp.zip
-
-        
+  
       - name: Create and Deploy Release
-        env:
-          OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
-          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         run: |
           docker run --rm \
-            octopusdeploy/octo \
-            create-release --server $OCTOPUS_URL \
-                           --apiKey $OCTOPUS_API_KEY \
-                           --project MyProject \
-                           --releaseNumber 1.0.$GITHUB_RUN_NUMBER \
-                           --deployTo Production
+            octopusdeploy/octopusdeploy:cli \
+            create-release --server "http://localhost:8080" \
+                           --apiKey ${{ secrets.OCTOPUS_API_KEY }} \
+                           --project "MyProject" \
+                           --releaseNumber "1.0.0" \
+                           --deployTo "Production"
