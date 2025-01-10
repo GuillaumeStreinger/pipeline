@@ -1,18 +1,17 @@
 {
-    "metadata": [
-        {
-            "src": [
-                { "files": ["MyDotNetApp/**/*.csproj"] }
-            ],
-            "dest": "api"
-        }
-    ],
-    "build": {
-        "content": [
-            { "files": ["api/**"] },
-            { "files": ["articles/**"] },
-            { "files": ["toc.yml"] }
-        ],
-        "dest": "Documentation"
+  "metadata": [
+    {
+      "src": [
+        { "files": ["MyDotNetApp/**/*.csproj"] }
+      ],
+      "dest": "api"
     }
+  ],
+  "build": {
+    "content": [
+      { "files": ["api/**"] },
+      { "files": ["articles/**", "toc.yml"], "exclude": ["**/bin/**", "**/obj/**"] }
+    ],
+    "dest": "_site"
+  }
 }
