@@ -60,9 +60,22 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y unzip curl mono-runtime
+
+      - name: Download and extract DocFX
+        run: |
+          curl -L -o docfx.zip https://github.com/dotnet/docfx/releases/download/v2.57.2/docfx.zip
+          unzip docfx.zip -d ./docfx
+          ls -la ./docfx  # Vérifiez que DocFX est bien téléchargé et extrait
+
       - name: Generate Documentation with DocFX
         run: |
-          docker run --rm -v "$(pwd):/workspace" -w /workspace ch3mn3y/docfx:2.57.2 docfx build
+          mono ./docfx/docfx.exe build
+        env:
+          DOTNET_CLI_HOME: ${{ github.workspace }}
 
       - name: Verify Documentation Output
         run: |
