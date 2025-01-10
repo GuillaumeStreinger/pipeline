@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <HelpTitle>MyDotNetApp Documentation</HelpTitle>
+    <OutputPath>Documentation</OutputPath>
+    <HtmlHelpName>MyDotNetApp</HtmlHelpName>
+  </PropertyGroup>
+  <ItemGroup>
+    <!-- Ajoutez ici les fichiers DLL et XML générés -->
+    <DocumentationSource sourceFile="../MyDotNetApp/bin/Release/net6.0/MyDotNetApp.dll" />
+    <DocumentationSource sourceFile="../MyDotNetApp/bin/Release/net6.0/MyDotNetApp.xml" />
+  </ItemGroup>
+</Project>

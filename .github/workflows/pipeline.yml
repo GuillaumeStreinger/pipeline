@@ -55,16 +55,28 @@ jobs:
 
   document:
     name: Generate Documentation
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Sandcastle Tools
-        run: dotnet tool install --global Sandcastle.Tools
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.0'
 
-      - name: Build Sandcastle Documentation
-        run: shfb build MyDocumentationProject.shfbproj
+      - name: Build the project
+        run: dotnet build MyDotNetApp.sln --configuration Release
+
+      - name: Download and install Sandcastle
+        run: |
+          choco install sandcastlehelpfilebuilder -y
+          echo "SHFB installed successfully"
+
+      - name: Generate documentation with SHFB
+        run: |
+          SHFBROOT="C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder"
+          "$SHFBROOT\SandcastleBuilderConsole.exe" MyDotNetApp.shfbproj
 
   test:
     name: Run NUnit Tests

@@ -13,3 +13,5 @@ D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\refint\MyDotNetApp.d
 D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.pdb
 D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.genruntimeconfig.cache
 D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\ref\MyDotNetApp.dll
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\obj\Release\net6.0\MyDotNetApp.xml
+D:\3ESGI\5ESGI\cicd\pipeline\MyDotNetApp\bin\Release\net6.0\MyDotNetApp.xml
