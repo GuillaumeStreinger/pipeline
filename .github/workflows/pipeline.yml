@@ -143,25 +143,21 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-
-      - name: Install CycloneDX for .NET
+  
+      - name: Install CycloneDX
         run: |
           dotnet tool install --global CycloneDX
           echo "PATH=$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
-
-      - name: Generate CycloneDX SBOM
+  
+      - name: Generate SBOM
         run: |
-          dotnet CycloneDX --output-file sbom.json
-
-      - name: Upload SBOM to Dependency-Track
-        env:
-          DEPENDENCY_TRACK_API_URL: ${{ secrets.DEPENDENCY_TRACK_API_URL }}
-          DEPENDENCY_TRACK_API_KEY: ${{ secrets.DEPENDENCY_TRACK_API_KEY }}
-        run: |
-          curl -X POST "$DEPENDENCY_TRACK_API_URL/api/v1/bom" \
-            -H "X-Api-Key: $DEPENDENCY_TRACK_API_KEY" \
-            -H "Content-Type: application/json" \
-            --data-binary @sbom.json
+          dotnet CycloneDX MyDotNetApp.sln --output . --filename sbom.json --json
+  
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v3
+        with:
+          name: sbom
+          path: sbom.json
   deploy:
     name: Deploy to Octopus Deploy
     runs-on: ubuntu-latest
