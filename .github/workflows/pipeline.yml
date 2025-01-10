@@ -34,24 +34,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Start SonarQube
-        run: |
-          docker run -d --name sonarqube -p 9000:9000 sonarqube:lts
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '8.0' # Version de .NET utilisée
 
-      - name: Wait for SonarQube to start
+      - name: Install SonarScanner
         run: |
-          sleep 30 # Wait for SonarQube to be ready
+          dotnet tool install --global dotnet-sonarscanner
+          echo "PATH=$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
 
-      - name: Run SonarScanner via Docker
+      - name: Run SonarScanner
+        env:
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          docker run --rm \
-            -e SONAR_HOST_URL=http://localhost:9000 \
-            -e SONAR_LOGIN=${{ secrets.SONARQUBE_TOKEN }} \
-            -v $(pwd):/usr/src \
-            sonarsource/sonar-scanner-cli \
-            -Dsonar.projectKey=MyDotNetApp \
-            -Dsonar.sources=. \
-            -Dsonar.language=cs
+          dotnet sonarscanner begin /k:"MyDotNetApp" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=${{ secrets.SONARQUBE_HOST_URL }}
+          dotnet build MyDotNetApp.sln --configuration Release
+          dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
 
   document:
     name: Generate Documentation
