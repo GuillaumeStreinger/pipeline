@@ -11,7 +11,7 @@ on:
 jobs:
   build:
     name: Build
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -28,7 +28,7 @@ jobs:
         run: dotnet build MyDotNetApp.sln --configuration Release
 
   measure:
-    name: SonarCloud Code Quality Analysis
+    name: Code Quality Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,25 +37,22 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '6.0'
+          dotnet-version: '8.0'
 
       - name: Install SonarScanner
         run: |
           dotnet tool install --global dotnet-sonarscanner
           echo "PATH=$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
 
-      - name: Run SonarCloud Analysis
+      - name: Run SonarScanner
         env:
+          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          dotnet sonarscanner begin \
-            /k:"GuillaumeStreinger_pipeline" \
-            /o:"guillaumestreinger" \
-            /d:sonar.host.url="https://sonarcloud.io" \
-            /d:sonar.login=${{ secrets.SONAR_TOKEN }}
+          dotnet sonarscanner begin /k:"MyDotNetApp" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=${{ secrets.SONARQUBE_HOST_URL }}
           dotnet build MyDotNetApp.sln --configuration Release
           dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
-          
+
   document:
     name: Generate Documentation
     runs-on: ubuntu-latest
@@ -157,36 +154,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Build ZIP Package
+      - name: Deploy with Octopus CLI
         run: |
-          mkdir output
-          zip -r output/MyDotNetApp.zip MyDotNetApp/bin/Release/net6.0/
-
-      - name: Install Octopus CLI
-        run: |
-          curl -L https://github.com/OctopusDeploy/cli/releases/latest/download/octopuscli-linux-x64.tar.gz -o octopuscli.tar.gz
-          mkdir octopuscli
-          tar -xzf octopuscli.tar.gz -C octopuscli
-          echo "PATH=$(pwd)/octopuscli:$PATH" >> $GITHUB_ENV
-
-      - name: Push Package to Octopus
-        env:
-          OCTOPUS_SERVER: ${{ secrets.OCTOPUS_SERVER }}
-          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_APIKEY }}
-        run: |
-          ./octopuscli/octo push \
-            --server $OCTOPUS_SERVER \
-            --apiKey $OCTOPUS_API_KEY \
-            --package output/MyDotNetApp.zip
-
-      - name: Create Deployment in Octopus
-        env:
-          OCTOPUS_SERVER: ${{ secrets.OCTOPUS_SERVER }}
-          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_APIKEY }}
-        run: |
-          ./octopuscli/octo create-release \
-            --server $OCTOPUS_SERVER \
-            --apiKey $OCTOPUS_API_KEY \
-            --project "MyDotNetApp" \
-            --version "1.0.${{ github.run_number }}" \
-            --deployTo "Dev"
+          docker run --rm \
+            -e OCTOPUS_SERVER=${{ secrets.OCTOPUS_SERVER }} \
+            -e OCTOPUS_APIKEY=${{ secrets.OCTOPUS_APIKEY }} \
+            octopusdeploy/octo push \
+            --package=myapp.zip \
+            --server=${{ secrets.OCTOPUS_SERVER }} \
+            --apiKey=${{ secrets.OCTOPUS_APIKEY }}
