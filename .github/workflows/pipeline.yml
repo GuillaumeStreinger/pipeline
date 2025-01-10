@@ -160,34 +160,35 @@ jobs:
           path: sbom.json
           
   deploy:
-      name: Deploy to Octopus Deploy
-      runs-on: ubuntu-latest
-      steps:
-        - name: Checkout code
-          uses: actions/checkout@v3
-
-        - name: Install required tools
-          run: |
-            sudo apt-get update
-            sudo apt-get install -y gzip tar curl
-
-        - name: Install Octopus CLI
-          run: |
-            curl -L https://github.com/OctopusDeploy/cli/releases/latest/download/octopuscli-linux-x64.tar.gz -o octopuscli.tar.gz
-            mkdir octopuscli
-            tar -xzf octopuscli.tar.gz -C octopuscli
-            echo "PATH=$(pwd)/octopuscli:$PATH" >> $GITHUB_ENV
-
-        - name: Push Package to Octopus
-          env:
-            OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
-            OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-          run: |
-            octo push --server $OCTOPUS_URL --apiKey $OCTOPUS_API_KEY --package myapp.zip
-
-        - name: Create and Deploy Release
-          env:
-            OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
-            OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
-          run: |
-            octo create-release --server $OCTOPUS_URL --apiKey $OCTOPUS_API_KEY --project MyProject --releaseNumber 1.0.$GITHUB_RUN_NUMBER --deployTo Production
+    name: Deploy to Octopus Deploy
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+  
+      - name: Install required tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gzip tar curl
+  
+      - name: Download and Extract Octopus CLI
+        run: |
+          curl -L https://github.com/OctopusDeploy/cli/releases/latest/download/octopuscli-linux-x64.tar.gz -o octopuscli.tar.gz
+          file octopuscli.tar.gz  # Vérification du type de fichier téléchargé
+          mkdir octopuscli
+          tar -xzf octopuscli.tar.gz -C octopuscli || cat octopuscli.tar.gz  # Afficher le contenu si l'extraction échoue
+          echo "PATH=$(pwd)/octopuscli:$PATH" >> $GITHUB_ENV
+  
+      - name: Push Package to Octopus
+        env:
+          OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        run: |
+          octo push --server $OCTOPUS_URL --apiKey $OCTOPUS_API_KEY --package myapp.zip
+  
+      - name: Create and Deploy Release
+        env:
+          OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
+          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
+        run: |
+          octo create-release --server $OCTOPUS_URL --apiKey $OCTOPUS_API_KEY --project MyProject --releaseNumber 1.0.$GITHUB_RUN_NUMBER --deployTo Production
