@@ -28,7 +28,7 @@ jobs:
         run: dotnet build MyDotNetApp.sln --configuration Release
 
   measure:
-    name: Code Quality Analysis
+    name: SonarCloud Code Quality Analysis
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -37,19 +37,22 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0'
+          dotnet-version: '6.0'
 
       - name: Install SonarScanner
         run: |
           dotnet tool install --global dotnet-sonarscanner
           echo "PATH=$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
 
-      - name: Run SonarScanner
+      - name: Run SonarCloud Analysis
         env:
-          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          dotnet sonarscanner begin /k:"MyDotNetApp" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=${{ secrets.SONARQUBE_HOST_URL }}
+          dotnet sonarscanner begin \
+            /k:"GuillaumeStreinger/pipeline" \
+            /o:"guillaumestreinger" \
+            /d:sonar.host.url="https://sonarcloud.io" \
+            /d:sonar.login=${{ secrets.SONAR_TOKEN }}
           dotnet build MyDotNetApp.sln --configuration Release
           dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
 
