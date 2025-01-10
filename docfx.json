@@ -1,0 +1,18 @@
+{
+    "metadata": [
+        {
+            "src": [
+                { "files": ["MyDotNetApp/**/*.csproj"] }
+            ],
+            "dest": "api"
+        }
+    ],
+    "build": {
+        "content": [
+            { "files": ["api/**"] },
+            { "files": ["articles/**"] },
+            { "files": ["toc.yml"] }
+        ],
+        "dest": "Documentation"
+    }
+}
