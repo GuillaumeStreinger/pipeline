@@ -1,0 +1,161 @@
+
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>SBOM Viewer</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 20px;
+                padding: 20px;
+                background-color: #f4f4f9;
+                color: #333;
+            }
+            h1, h2 {
+                color: #0078d7;
+            }
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 20px 0;
+            }
+            table, th, td {
+                border: 1px solid #ddd;
+            }
+            th, td {
+                padding: 8px;
+                text-align: left;
+            }
+            th {
+                background-color: #0078d7;
+                color: white;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>SBOM</h1>
+        <h2>Metadata</h2>
+        <p><strong>BOM Format:</strong> CycloneDX</p>
+        <p><strong>Specification Version:</strong> 1.6</p>
+        <p><strong>Version:</strong> 1</p>
+        <p><strong>Timestamp:</strong> 2025-01-10T11:23:48Z</p>
+
+        <h2>Components</h2>
+        <table>
+            <tr>
+                <th>Name</th>
+                <th>Version</th>
+                <th>Type</th>
+                <th>Description</th>
+                <th>License</th>
+                <th>Publisher</th>
+            </tr>
+    
+        <tr>
+            <td>Microsoft.CodeCoverage</td>
+            <td>17.12.0</td>
+            <td>library</td>
+            <td>Microsoft.CodeCoverage package brings infra for collecting code coverage from vstest.console.exe and "dotnet test".</td>
+            <td>MIT</td>
+            <td>Microsoft</td>
+        </tr>
+        
+        <tr>
+            <td>Microsoft.NET.Test.Sdk</td>
+            <td>17.12.0</td>
+            <td>library</td>
+            <td>The MSbuild targets and properties for building .NET test projects.</td>
+            <td>MIT</td>
+            <td>Microsoft</td>
+        </tr>
+        
+        <tr>
+            <td>Microsoft.NETCore.Platforms</td>
+            <td>1.1.0</td>
+            <td>library</td>
+            <td>Provides runtime information required to resolve target framework, platform, and runtime specific implementations of .NETCore packages. 
+When using NuGet 3.x this package requires at least version 3.4.</td>
+            <td>N/A</td>
+            <td>Microsoft</td>
+        </tr>
+        
+        <tr>
+            <td>Microsoft.TestPlatform.ObjectModel</td>
+            <td>17.12.0</td>
+            <td>library</td>
+            <td>The Microsoft Test Platform Object Model.</td>
+            <td>MIT</td>
+            <td>Microsoft</td>
+        </tr>
+        
+        <tr>
+            <td>Microsoft.TestPlatform.TestHost</td>
+            <td>17.12.0</td>
+            <td>library</td>
+            <td>Testplatform host executes the test using specified adapter.</td>
+            <td>MIT</td>
+            <td>Microsoft</td>
+        </tr>
+        
+        <tr>
+            <td>NETStandard.Library</td>
+            <td>2.0.0</td>
+            <td>library</td>
+            <td>A set of standard .NET APIs that are prescribed to be used and supported together. 
+d318b764a689cfe285d8484bda918646905664e7 
+When using NuGet 3.x this package requires at least version 3.4.</td>
+            <td>N/A</td>
+            <td>Microsoft</td>
+        </tr>
+        
+        <tr>
+            <td>Newtonsoft.Json</td>
+            <td>13.0.1</td>
+            <td>library</td>
+            <td>Json.NET is a popular high-performance JSON framework for .NET</td>
+            <td>MIT</td>
+            <td>James Newton-King</td>
+        </tr>
+        
+        <tr>
+            <td>NUnit</td>
+            <td>3.13.3</td>
+            <td>library</td>
+            <td>NUnit is a unit-testing framework for all .NET languages with a strong TDD focus.</td>
+            <td>N/A</td>
+            <td>Charlie Poole, Rob Prouse</td>
+        </tr>
+        
+        <tr>
+            <td>NUnit3TestAdapter</td>
+            <td>4.6.0</td>
+            <td>library</td>
+            <td>NUnit3 adapter for running tests in Visual Studio and DotNet. Works with NUnit 3.x, use the NUnit 2 adapter for 2.x tests.</td>
+            <td>MIT</td>
+            <td>Charlie Poole, Terje Sandstrom</td>
+        </tr>
+        
+        <tr>
+            <td>System.Reflection.Metadata</td>
+            <td>1.6.0</td>
+            <td>library</td>
+            <td>This packages provides a low-level .NET (ECMA-335) metadata reader and writer. It's geared for performance and is the ideal choice for building higher-level libraries that intend to provide their own object model, such as compilers.
+
+Commonly Used Types:
+System.Reflection.Metadata.MetadataReader
+System.Reflection.PortableExecutable.PEReader
+System.Reflection.Metadata.Ecma335.MetadataBuilder
+System.Reflection.PortableExecutable.PEBuilder
+System.Reflection.PortableExecutable.ManagedPEBuilder
+ 
+30ab651fcb4354552bd4891619a0bdd81e0ebdbf 
+When using NuGet 3.x this package requires at least version 3.4.</td>
+            <td>N/A</td>
+            <td>Microsoft</td>
+        </tr>
+        
+        </table>
+    </body>
+    </html>
+    
