@@ -70,9 +70,29 @@ jobs:
           dotnet tool install -g docfx
           echo "PATH=$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
 
+      - name: Create docfx.json
+        run: |
+          echo '{
+            "metadata": [
+              {
+                "src": [
+                  { "files": ["MyDotNetApp/**/*.csproj"] }
+                ],
+                "dest": "api"
+              }
+            ],
+            "build": {
+              "content": [
+                { "files": ["api/**"] },
+                { "files": ["articles/**"] },
+                { "files": ["toc.yml"] }
+              ],
+              "dest": "_site"
+            }
+          }' > docfx.json
+
       - name: Generate Documentation with DocFX
         run: |
-          docfx init  # Crée un fichier de configuration docfx.json si nécessaire
           docfx build
 
       - name: Verify Documentation Output
@@ -86,7 +106,6 @@ jobs:
         with:
           name: documentation
           path: _site/
-
           
   test:
     name: Run NUnit Tests
