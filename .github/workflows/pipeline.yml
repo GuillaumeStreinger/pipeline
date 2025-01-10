@@ -157,10 +157,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Deploy with Octopus CLI
+      - name: Build ZIP Package
         run: |
-          docker pull octopusdeploy/octo
-          docker run --rm \
-            -e OCTOPUS_SERVER=${{ secrets.OCTOPUS_SERVER }} \
-            -e OCTOPUS_APIKEY=${{ secrets.OCTOPUS_APIKEY }} \
-            octopusdeploy/octo push --package=myapp.zip
+          mkdir output
+          zip -r output/MyDotNetApp.zip MyDotNetApp/bin/Release/net6.0/
+
+      - name: Install Octopus CLI
+        run: |
+          curl -L https://github.com/OctopusDeploy/cli/releases/latest/download/octopuscli-linux-x64.tar.gz -o octopuscli.tar.gz
+          mkdir octopuscli
+          tar -xzf octopuscli.tar.gz -C octopuscli
+          echo "PATH=$(pwd)/octopuscli:$PATH" >> $GITHUB_ENV
+
+      - name: Push Package to Octopus
+        env:
+          OCTOPUS_SERVER: ${{ secrets.OCTOPUS_SERVER }}
+          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_APIKEY }}
+        run: |
+          ./octopuscli/octo push \
+            --server $OCTOPUS_SERVER \
+            --apiKey $OCTOPUS_API_KEY \
+            --package output/MyDotNetApp.zip
+
+      - name: Create Deployment in Octopus
+        env:
+          OCTOPUS_SERVER: ${{ secrets.OCTOPUS_SERVER }}
+          OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_APIKEY }}
+        run: |
+          ./octopuscli/octo create-release \
+            --server $OCTOPUS_SERVER \
+            --apiKey $OCTOPUS_API_KEY \
+            --project "MyDotNetApp" \
+            --version "1.0.${{ github.run_number }}" \
+            --deployTo "Dev"
