@@ -67,7 +67,7 @@ jobs:
 
       - name: Download and extract DocFX v3
         run: |
-          curl -L -o docfx.zip https://github.com/dotnet/docfx/releases/latest/download/docfx-linux-x64.zip
+          curl -L -o docfx.zip https://github.com/dotnet/docfx/releases/download/v3.0.0-beta1/docfx-linux-x64.zip
           unzip docfx.zip -d ./docfx
           ls -la ./docfx  # Vérifiez que DocFX est bien téléchargé et extrait
 
