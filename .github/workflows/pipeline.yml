@@ -171,19 +171,25 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y gzip tar curl
   
-      - name: Download and Extract Octopus CLI
+      - name: Download and Install Octopus CLI
         run: |
           curl -L https://github.com/OctopusDeploy/cli/releases/latest/download/octopuscli-linux-x64.tar.gz -o octopuscli.tar.gz
-          file octopuscli.tar.gz  # Vérification du type de fichier téléchargé
-          mkdir octopuscli
-          tar -xzf octopuscli.tar.gz -C octopuscli || cat octopuscli.tar.gz  # Afficher le contenu si l'extraction échoue
+          mkdir -p octopuscli
+          tar -xzf octopuscli.tar.gz -C octopuscli
+          chmod +x octopuscli/octo
           echo "PATH=$(pwd)/octopuscli:$PATH" >> $GITHUB_ENV
+  
+      - name: Verify Octopus CLI Installation
+        run: |
+          source $GITHUB_ENV
+          octo --version
   
       - name: Push Package to Octopus
         env:
           OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
           OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         run: |
+          source $GITHUB_ENV
           octo push --server $OCTOPUS_URL --apiKey $OCTOPUS_API_KEY --package myapp.zip
   
       - name: Create and Deploy Release
@@ -191,4 +197,5 @@ jobs:
           OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
           OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         run: |
+          source $GITHUB_ENV
           octo create-release --server $OCTOPUS_URL --apiKey $OCTOPUS_API_KEY --project MyProject --releaseNumber 1.0.$GITHUB_RUN_NUMBER --deployTo Production
