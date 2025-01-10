@@ -193,11 +193,12 @@ jobs:
           OCTOPUS_API_KEY: ${{ secrets.OCTOPUS_API_KEY }}
         run: |
           docker run --rm \
+            -v $(pwd):/src \  # Montre le répertoire actuel dans le conteneur
             octopusdeploy/octo \
             push --server $OCTOPUS_URL \
                  --apiKey $OCTOPUS_API_KEY \
-                 --package myapp.zip
-  
+                 --package /src/myapp.zip
+        
       - name: Create and Deploy Release
         env:
           OCTOPUS_URL: ${{ secrets.OCTOPUS_URL }}
