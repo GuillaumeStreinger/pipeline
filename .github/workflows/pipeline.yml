@@ -158,7 +158,7 @@ jobs:
         with:
           name: sbom
           path: sbom.json
-          
+
   deploy:
     name: Deploy to Octopus Deploy
     runs-on: ubuntu-latest
@@ -173,7 +173,7 @@ jobs:
   
       - name: Download and Install Octopus CLI
         run: |
-          curl -L https://github.com/OctopusDeploy/cli/releases/latest/download/octopuscli-linux-x64.tar.gz -o octopuscli.tar.gz
+          curl -L https://octopus.com/downloads/latest/octopuscli/linux-x64 -o octopuscli.tar.gz
           mkdir -p octopuscli
           tar -xzf octopuscli.tar.gz -C octopuscli
           chmod +x octopuscli/octo
