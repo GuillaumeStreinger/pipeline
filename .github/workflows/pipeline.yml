@@ -30,6 +30,21 @@ jobs:
   measure:
     name: Code Quality Analysis
     runs-on: ubuntu-latest
+
+    services:
+      sonar:
+        image: sonarqube:community
+        ports:
+          - 9000:9000
+        options: >-
+          --health-cmd="curl -f http://localhost:9000 || exit 1"
+          --health-interval=5s
+          --health-timeout=3s
+          --health-retries=20
+        env:
+          SONAR_ES_BOOTSTRAP_CHECKS_DISABLE: "true"
+          SONAR_WEB_CONTEXT: "/"
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -37,19 +52,29 @@ jobs:
       - name: Set up .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: '8.0' # Version de .NET utilisée
+          dotnet-version: '6.0'
 
       - name: Install SonarScanner
         run: |
           dotnet tool install --global dotnet-sonarscanner
           echo "PATH=$HOME/.dotnet/tools:$PATH" >> $GITHUB_ENV
 
+      - name: Wait for SonarQube to be ready
+        run: |
+          echo "Waiting for SonarQube to be ready..."
+          until curl -s http://localhost:9000/api/system/status | grep '"status":"UP"'; do
+            sleep 5
+          done
+          echo "SonarQube is ready."
+
       - name: Run SonarScanner
         env:
-          SONAR_HOST_URL: ${{ secrets.SONARQUBE_HOST_URL }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
-          dotnet sonarscanner begin /k:"MyDotNetApp" /d:sonar.login=${{ secrets.SONAR_TOKEN }} /d:sonar.host.url=${{ secrets.SONARQUBE_HOST_URL }}
+          dotnet sonarscanner begin \
+            /k:"MyDotNetApp" \
+            /d:sonar.host.url=http://localhost:9000 \
+            /d:sonar.login=${{ secrets.SONAR_TOKEN }}
           dotnet build MyDotNetApp.sln --configuration Release
           dotnet sonarscanner end /d:sonar.login=${{ secrets.SONAR_TOKEN }}
 
@@ -105,7 +130,7 @@ jobs:
         with:
           name: documentation
           path: _site/
-          
+
   test:
     name: Run NUnit Tests
     runs-on: ubuntu-latest
