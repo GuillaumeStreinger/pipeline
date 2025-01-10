@@ -52,46 +52,46 @@ jobs:
             -Dsonar.projectKey=MyDotNetApp \
             -Dsonar.sources=. \
             -Dsonar.language=cs
+    
+  document:
+      name: Generate Documentation
+      runs-on: windows-latest
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v3
 
-   document:
-    name: Generate Documentation
-    runs-on: windows-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+        - name: Setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+            dotnet-version: '6.0'
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '6.0'
+        - name: Build the project
+          run: dotnet build MyDotNetApp.sln --configuration Release
 
-      - name: Build the project
-        run: dotnet build MyDotNetApp.sln --configuration Release
+        - name: Install SHFB from local zip
+          run: |
+            Expand-Archive -Path ./SHFBInstaller.zip -DestinationPath SHFB
+            if (Test-Path SHFB/SHFB.msi) {
+              msiexec /i SHFB/SHFB.msi /quiet
+            } else {
+              Write-Error "SHFB.msi not found in the extracted archive."
+            }
 
-      - name: Install SHFB from local zip
-        run: |
-          Expand-Archive -Path ./SHFBInstaller.zip -DestinationPath SHFB
-          if (Test-Path SHFB/SHFB.msi) {
-            msiexec /i SHFB/SHFB.msi /quiet
-          } else {
-            Write-Error "SHFB.msi not found in the extracted archive."
-          }
+        - name: Verify SHFB installation
+          run: |
+            if (!(Test-Path "C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe")) {
+              Write-Error "SHFB was not installed successfully."
+            }
 
-      - name: Verify SHFB installation
-        run: |
-          if (!(Test-Path "C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe")) {
-            Write-Error "SHFB was not installed successfully."
-          }
+        - name: Generate documentation with SHFB
+          run: |
+            & "C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe" "Documentation/MyDotNetApp.shfbproj"
 
-      - name: Generate documentation with SHFB
-        run: |
-          & "C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe" "Documentation/MyDotNetApp.shfbproj"
-
-      - name: Verify Documentation Output
-        run: |
-          if (!(Test-Path "Documentation/OutputFolder")) {
-            Write-Error "Documentation was not generated successfully."
-          }
+        - name: Verify Documentation Output
+          run: |
+            if (!(Test-Path "Documentation/OutputFolder")) {
+              Write-Error "Documentation was not generated successfully."
+            }
 
   test:
     name: Run NUnit Tests
