@@ -49,8 +49,8 @@ jobs:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         run: |
           dotnet sonarscanner begin \
-            /k:"<SonarCloudProjectKey>" \
-            /o:"<SonarCloudOrganization>" \
+            /k:"pipeline" \
+            /o:"GuillaumeStreinger" \
             /d:sonar.host.url="https://sonarcloud.io" \
             /d:sonar.login=${{ secrets.SONAR_TOKEN }}
           dotnet build MyDotNetApp.sln --configuration Release
