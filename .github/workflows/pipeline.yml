@@ -53,7 +53,7 @@ jobs:
             -Dsonar.sources=. \
             -Dsonar.language=cs
 
-  document:
+   document:
     name: Generate Documentation
     runs-on: windows-latest
     steps:
@@ -71,15 +71,27 @@ jobs:
       - name: Install SHFB from local zip
         run: |
           Expand-Archive -Path ./SHFBInstaller.zip -DestinationPath SHFB
-          msiexec /i SHFB/SHFB.msi /quiet
+          if (Test-Path SHFB/SHFB.msi) {
+            msiexec /i SHFB/SHFB.msi /quiet
+          } else {
+            Write-Error "SHFB.msi not found in the extracted archive."
+          }
 
-      - name: Add SHFB to PATH
+      - name: Verify SHFB installation
         run: |
-          $env:Path += ";C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\"
+          if (!(Test-Path "C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe")) {
+            Write-Error "SHFB was not installed successfully."
+          }
 
       - name: Generate documentation with SHFB
         run: |
-          "C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe" Documentation/MyDotNetApp.shfbproj
+          & "C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\SandcastleBuilderConsole.exe" "Documentation/MyDotNetApp.shfbproj"
+
+      - name: Verify Documentation Output
+        run: |
+          if (!(Test-Path "Documentation/OutputFolder")) {
+            Write-Error "Documentation was not generated successfully."
+          }
 
   test:
     name: Run NUnit Tests
